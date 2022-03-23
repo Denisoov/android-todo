@@ -1,6 +1,6 @@
 <template>
   <Page class="page">
-    <ActionBar title="My Tasks" class="action-bar" />
+    <ActionBar title="To Do" class="action-bar" />
 
     <TabView
       height="100%"
@@ -8,8 +8,7 @@
       selected-tab-text-color="#53ba82"
       tab-text-font-size="15"
     >
-      <TabViewItem title="To Do" text-transform="uppercase">
-        <!-- Positions an input field, a button, and the list of tasks in a vertical stack. -->
+      <TabViewItem title="Активные" text-transform="uppercase">
         <StackLayout
           orientation="vertical"
           width="100%"
@@ -22,18 +21,17 @@
             height="25%"
           >
             <TextField
-              v-model="textFieldValue"
+              v-model="newTask"
               col="0"
               row="0"
-              hint="Type new task..."
+              hint="Новая задача"
               editable="true"
               @returnPress="onButtonTap"
             />
-            <!-- Configures the text field and ensures that pressing Return on the keyboard produces the same result as tapping the button. -->
             <Button
               col="1"
               row="0"
-              text="Add task"
+              text="Добавить"
               @tap="onButtonTap"
             />
           </GridLayout>
@@ -57,7 +55,7 @@
         </StackLayout>
       </TabViewItem>
 
-      <TabViewItem title="Completed" text-transform="uppercase">
+      <TabViewItem title="Выполненные" text-transform="uppercase">
         <ListView
           class="list-group"
           for="done in dones"
@@ -79,7 +77,7 @@
   </Page>
 </template>
 
-<script src="http://localhost:8098"></script>
+<script></script>
 
 <script>
 export default {
@@ -87,62 +85,54 @@ export default {
     return {
       dones: [],
       todos: [],
-      textFieldValue: '',
+      newTask: '',
     };
   },
   methods: {
     onItemTap(args) {
-      console.log(`Item with index: ${args.index} tapped`);
-      action('What do you want to do with this task?', 'Cancel', [
-        'Mark completed',
-        'Delete forever',
+      action('Выберете вариант', 'Закрыть', [
+        'Выполнено',
+        'Удалить',
       ]).then(result => {
-        console.log(result); // Logs the selected option for debugging.
         switch (result) {
-          case 'Mark completed':
-            this.dones.unshift(args.item); // Places the tapped active task at the top of the completed tasks.
-            this.todos.splice(args.index, 1); // Removes the tapped active task.
+          case 'Выполнено':
+            this.dones.unshift(args.item);
+            this.todos.splice(args.index, 1);
             break;
-          case 'Delete forever':
-            this.todos.splice(args.index, 1); // Removes the tapped active task.
+          case 'Удалить':
+            this.todos.splice(args.index, 1);
             break;
-          case 'Cancel' || undefined: // Dismisses the dialog
+          case 'Закрыть' || undefined:
             break;
         }
       });
     },
     onDoneTap: function(args) {
-      action('What do you want to do with this task?', 'Cancel', [
-        'Mark to do',
-        'Delete forever',
+      action('Выберете вариант', 'Закрыть', [
+        'Возобновить',
+        'Удалить',
       ]).then(result => {
-        console.log(result); // Logs the selected option for debugging.
         switch (result) {
-          case 'Mark to do':
+          case 'Возобновить':
             this.todos.unshift(args.item);
-            // Places the tapped completed task at the top of the to do tasks.
-            this.dones.splice(args.index, 1); // Removes the tapped completed task.
+            this.dones.splice(args.index, 1);
             break;
-          case 'Delete forever':
-            this.dones.splice(args.index, 1); // Removes the tapped completed task.
+          case 'Удалить':
+            this.dones.splice(args.index, 1);
             break;
-          case 'Cancel' || undefined: // Dismisses the dialog
+          case 'Закрыть' || undefined:
             break;
         }
       });
     },
     onButtonTap() {
-      // Prevent users from entering an empty string
-      if (!this.textFieldValue) {
+      if (!this.newTask) {
         return;
       }
-      console.log(`New task added: ${this.textFieldValue}.`);
-      // Adds tasks in the ToDo array. Newly added tasks are immediately shown on the screen
       this.todos.unshift({
-        name: this.textFieldValue,
+        name: this.newTask,
       });
-      // Clear the text field
-      this.textFieldValue = '';
+      this.newTask = '';
     },
   },
 };
