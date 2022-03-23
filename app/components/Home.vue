@@ -77,8 +77,6 @@
   </Page>
 </template>
 
-<script></script>
-
 <script>
 export default {
   data() {
