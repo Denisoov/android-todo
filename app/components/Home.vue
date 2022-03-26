@@ -1,7 +1,6 @@
 <template>
   <Page class="page">
     <ActionBar title="To Do" class="action-bar" />
-
     <TabView
       height="100%"
       android-tabs-position="bottom"
@@ -35,7 +34,6 @@
               @tap="onButtonTap"
             />
           </GridLayout>
-
           <ListView
             class="list-group"
             for="todo in todos"
@@ -78,6 +76,9 @@
 </template>
 
 <script>
+
+import { getTasks, setTask } from '@/storage.js'
+
 export default {
   data() {
     return {
@@ -86,8 +87,13 @@ export default {
       newTask: '',
     };
   },
+  created() {
+    this.todos = getTasks('todos')
+    this.dones = getTasks('dones')
+  },
   methods: {
     onItemTap(args) {
+
       action('Выберете вариант', 'Закрыть', [
         'Выполнено',
         'Удалить',
@@ -103,6 +109,8 @@ export default {
           case 'Закрыть' || undefined:
             break;
         }
+        setTask('todos', this.todos)
+        setTask('dones', this.dones)
       });
     },
     onDoneTap: function(args) {
@@ -121,6 +129,8 @@ export default {
           case 'Закрыть' || undefined:
             break;
         }
+        setTask('todos', this.todos)
+        setTask('dones', this.dones)
       });
     },
     onButtonTap() {
@@ -130,6 +140,7 @@ export default {
       this.todos.unshift({
         name: this.newTask,
       });
+      setTask('todos', this.todos)
       this.newTask = '';
     },
   },
