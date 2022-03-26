@@ -134,13 +134,14 @@ export default {
       });
     },
     onButtonTap() {
-      if (!this.newTask) {
-        return;
-      }
+      if (!this.newTask) return;
+
       this.todos.unshift({
         name: this.newTask,
       });
+
       setTask('todos', this.todos)
+      
       this.newTask = '';
     },
   },
